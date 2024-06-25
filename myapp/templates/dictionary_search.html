@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dictionary Search</title>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <header>
+        <h1>Dictionary Search</h1>
+    </header>
+    <main>
+        <section class="content">
+            <form method="post" action="{% url 'dictionary_search' %}">
+                {% csrf_token %}
+                <label for="word">Enter a word:</label>
+                <input type="text" id="word" name="word" required>
+                <button type="submit">Search</button>
+            </form>
+            {% if word %}
+                <h2>Results for "{{ word }}":</h2>
+                {% if error %}
+                    <p class="error">{{ error }}</p>
+                {% else %}
+                    {% for entry in data %}
+                        <h3>{{ entry.word }}</h3>
+                        {% for meaning in entry.meanings %}
+                            <h4>{{ meaning.partOfSpeech }}</h4>
+                            <ul>
+                                {% for definition in meaning.definitions %}
+                                    <li>{{ definition.definition }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endfor %}
+                    {% endfor %}
+                {% endif %}
+            {% endif %}
+        </section>
+    </main>
+</body>
+</html>
